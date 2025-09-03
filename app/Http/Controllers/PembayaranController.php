@@ -20,43 +20,40 @@ class PembayaranController extends Controller
 
     // Simpan data baru
     public function store(Request $request)
-    {
-        $request->validate([
-            'id_user'    => 'required|exists:users,id',
-            'keamanan'   => 'required|integer',
-            'kebersihan' => 'required|integer',
-            'tanggal'    => 'required|date',
-        ]);
+{
+    // Validasi tanggal harus unik
+    $validated = $request->validate([
+        'tanggal' => 'required|unique:pembayarans,tanggal',
+    ]);
 
-        DB::beginTransaction();
-        try {
-            $total = $request->keamanan + $request->kebersihan;
-
-            $pembayaran = Pembayaran::create([
-                'id_user'    => $request->id_user,
-                'keamanan'   => $request->keamanan,
-                'kebersihan' => $request->kebersihan,
-                'tanggal'    => $request->tanggal,
-                'status'     => 'belum terbayar',
-                'total'      => $total,
-            ]);
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran berhasil dibuat',
-                'data'    => $pembayaran
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menyimpan data',
-                'error'   => $e->getMessage()
-            ], 500);
-        }
+    // Pastikan tanggal yang dipilih adalah tanggal 4
+    if (\Carbon\Carbon::parse($request->tanggal)->day != 1) {
+        return back()
+            ->withErrors(['tanggal' => 'Pembayaran hanya bisa pada tanggal 1 setiap bulan.'])
+            ->withInput();
     }
+
+    DB::beginTransaction();
+    try {
+        $pembayaran = new Pembayaran();
+        $pembayaran->id_user     = auth()->id(); // supaya nyimpen ke user yang login
+        $pembayaran->keamanan    = 101120;       // nilai tetap
+        $pembayaran->kebersihan  = 40000;        // nilai tetap
+        $pembayaran->tanggal     = $request->tanggal;
+        $pembayaran->total       = $pembayaran->keamanan + $pembayaran->kebersihan;
+        $pembayaran->status      = 'belum terbayar';
+        $pembayaran->save();
+
+        DB::commit();
+
+        toast('Data berhasil disimpan', 'success');
+        return redirect()->route('admin.pembayaran.index');
+    } catch (Exception $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
+    }
+}
+
 
     // Update pembayaran
     public function update(Request $request, $id)

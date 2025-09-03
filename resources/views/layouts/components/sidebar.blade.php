@@ -11,11 +11,33 @@
             <!-- Dashboard -->
             <!-- ---------------------------------- -->
             <li class="sidebar-item">
-              <a class="sidebar-link" href="" id="get-url" aria-expanded="false">
-                <span>
-                  <i class="ti ti-aperture"></i>
-                </span>
-                <span class="hide-menu">Data Pembayaran</span>
+              <a class="sidebar-link" href="{{ route('admin.pembayaran.index') }}">
+                <span><i class="ti ti-cash"></i></span>
+                <span class="hide-menu">Pembayaran</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.iklan.index') }}">
+                <span><i class="ti ti-broadcast"></i></span>
+                <span class="hide-menu">Iklan</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.pengumuman.index') }}">
+                <span><i class="ti ti-megaphone"></i></span>
+                <span class="hide-menu">Pengumuman</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.kegiatan.index') }}">
+                <span><i class="ti ti-calendar-event"></i></span>
+                <span class="hide-menu">Kegiatan</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ route('admin.saran.index') }}">
+                <span><i class="ti ti-message-dots"></i></span>
+                <span class="hide-menu">Saran & Kritik</span>
               </a>
             </li>
           </ul>

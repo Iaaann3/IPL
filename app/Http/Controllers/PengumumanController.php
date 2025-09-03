@@ -1,103 +1,95 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PengumumanController extends Controller
 {
     public function index()
     {
-        try {
-            $pengumumans = Pengumuman::latest()->get();
-            return response()->json([
-                'success' => true,
-                'data' => $pengumumans
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengambil data',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        $pengumumans = Pengumuman::latest()->paginate(10);
+        return view('admin.pengumuman.index', compact('pengumumans'));
+    }
+
+    public function create()
+    {
+        return view('admin.pengumuman.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
+            'judul'   => 'required|string|max:255',
+            'isi'     => 'required|string',
             'tanggal' => 'required|date',
-            'gambar' => 'nullable|string',
+            'gambar'  => 'nullable|image|max:2048',
         ]);
 
         DB::beginTransaction();
         try {
-            $pengumuman = Pengumuman::create($request->all());
+            $pengumuman          = new Pengumuman();
+            $pengumuman->judul   = $request->judul;
+            $pengumuman->isi     = $request->isi;
+            $pengumuman->tanggal = $request->tanggal;
+
+            if ($request->hasFile('gambar')) {
+                $path               = $request->file('gambar')->store('pengumuman', 'public');
+                $pengumuman->gambar = $path; // simpan path file, bukan judul
+            }
+
+            $pengumuman->save();
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengumuman berhasil ditambahkan',
-                'data' => $pengumuman
-            ]);
+            return redirect()->route('admin.pengumuman.index')
+                ->with('success', 'Pengumuman berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menambahkan pengumuman',
-                'error' => $e->getMessage()
-            ], 500);
+            return back()->withInput()->with('error', 'Gagal menambahkan pengumuman: ' . $e->getMessage());
         }
     }
 
-    public function show($id)
+    public function edit($id)
     {
-        try {
-            $pengumuman = Pengumuman::findOrFail($id);
-            return response()->json([
-                'success' => true,
-                'data' => $pengumuman
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tidak ditemukan',
-                'error' => $e->getMessage()
-            ], 404);
-        }
+        $pengumuman = Pengumuman::findOrFail($id);
+        return view('admin.pengumuman.edit', compact('pengumuman'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
+            'judul'   => 'required|string|max:255',
+            'isi'     => 'required|string',
             'tanggal' => 'required|date',
-            'gambar' => 'nullable|string',
+            'gambar'  => 'nullable|image|max:2048',
         ]);
 
         DB::beginTransaction();
         try {
-            $pengumuman = Pengumuman::findOrFail($id);
-            $pengumuman->update($request->all());
+            $pengumuman          = Pengumuman::findOrFail($id);
+            $pengumuman->judul   = $request->judul;
+            $pengumuman->isi     = $request->isi;
+            $pengumuman->tanggal = $request->tanggal;
+
+            if ($request->hasFile('gambar')) {
+                if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
+                    Storage::disk('public')->delete($pengumuman->gambar);
+                }
+
+                $path               = $request->file('gambar')->store('pengumuman', 'public');
+                $pengumuman->gambar = $path;
+            }
+
+            $pengumuman->save();
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengumuman berhasil diperbarui',
-                'data' => $pengumuman
-            ]);
+            return redirect()->route('admin.pengumuman.index')
+                ->with('success', 'Pengumuman berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui pengumuman',
-                'error' => $e->getMessage()
-            ], 500);
+            return back()->withInput()->with('error', 'Gagal memperbarui pengumuman: ' . $e->getMessage());
         }
     }
 
@@ -106,20 +98,19 @@ class PengumumanController extends Controller
         DB::beginTransaction();
         try {
             $pengumuman = Pengumuman::findOrFail($id);
+
+            if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
+                Storage::disk('public')->delete($pengumuman->gambar);
+            }
+
             $pengumuman->delete();
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengumuman berhasil dihapus'
-            ]);
+            return redirect()->route('admin.pengumuman.index')
+                ->with('success', 'Pengumuman berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menghapus pengumuman',
-                'error' => $e->getMessage()
-            ], 500);
+            return back()->with('error', 'Gagal menghapus pengumuman: ' . $e->getMessage());
         }
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Kegiatan;
@@ -10,116 +9,90 @@ class KegiatanController extends Controller
 {
     public function index()
     {
-        try {
-            $kegiatans = Kegiatan::latest()->get();
-            return response()->json([
-                'success' => true,
-                'data' => $kegiatans
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengambil data kegiatan',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        $kegiatans = Kegiatan::latest()->paginate(10);
+        return view('admin.kegiatan.index', compact('kegiatans'));
+    }
+
+    public function create()
+    {
+        return view('admin.kegiatan.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'lokasi' => 'nullable|string|max:255',
-            'gambar' => 'nullable|string',
+            'deskripsi'     => 'nullable|string',
+            'lokasi'        => 'nullable|string|max:255',
+            'gambar'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        DB::beginTransaction();
         try {
-            $kegiatan = Kegiatan::create($request->all());
-            DB::commit();
+            DB::beginTransaction();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Kegiatan berhasil ditambahkan',
-                'data' => $kegiatan
-            ]);
+            $data = $request->only(['nama_kegiatan', 'deskripsi', 'lokasi']);
+
+            if ($request->hasFile('gambar')) {
+                $data['gambar'] = $request->file('gambar')->store('kegiatan', 'public');
+            }
+
+            Kegiatan::create($data);
+
+            DB::commit();
+            return redirect()->route('admin.kegiatan.index')
+                ->with('success', 'Kegiatan berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menambahkan kegiatan',
-                'error' => $e->getMessage()
-            ], 500);
+            return back()->with('error', 'Gagal menambahkan kegiatan: ' . $e->getMessage());
         }
     }
 
-    public function show($id)
+    public function edit($id)
     {
-        try {
-            $kegiatan = Kegiatan::findOrFail($id);
-            return response()->json([
-                'success' => true,
-                'data' => $kegiatan
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kegiatan tidak ditemukan',
-                'error' => $e->getMessage()
-            ], 404);
-        }
+        $kegiatan = Kegiatan::findOrFail($id);
+        return view('admin.kegiatan.edit', compact('kegiatan'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'lokasi' => 'nullable|string|max:255',
-            'gambar' => 'nullable|string',
+            'deskripsi'     => 'nullable|string',
+            'lokasi'        => 'nullable|string|max:255',
+            'gambar'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        DB::beginTransaction();
         try {
-            $kegiatan = Kegiatan::findOrFail($id);
-            $kegiatan->update($request->all());
-            DB::commit();
+            DB::beginTransaction();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Kegiatan berhasil diperbarui',
-                'data' => $kegiatan
-            ]);
+            $kegiatan = Kegiatan::findOrFail($id);
+            $data     = $request->only(['nama_kegiatan', 'deskripsi', 'lokasi']);
+
+            if ($request->hasFile('gambar')) {
+                $data['gambar'] = $request->file('gambar')->store('kegiatan', 'public');
+            }
+
+            $kegiatan->update($data);
+
+            DB::commit();
+            return redirect()->route('admin.kegiatan.index')
+                ->with('success', 'Kegiatan berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui kegiatan',
-                'error' => $e->getMessage()
-            ], 500);
+            return back()->with('error', 'Gagal memperbarui kegiatan: ' . $e->getMessage());
         }
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
         try {
             $kegiatan = Kegiatan::findOrFail($id);
             $kegiatan->delete();
-            DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Kegiatan berhasil dihapus'
-            ]);
+            return redirect()->route('admin.kegiatan.index')
+                ->with('success', 'Kegiatan berhasil dihapus');
         } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menghapus kegiatan',
-                'error' => $e->getMessage()
-            ], 500);
+            return back()->with('error', 'Gagal menghapus kegiatan: ' . $e->getMessage());
         }
     }
 }

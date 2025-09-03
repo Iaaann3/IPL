@@ -7,6 +7,13 @@ use App\Http\Controllers\IklanController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KritikSaranController;
+use App\Http\Controllers\UserDashboardController;
+// use App\Http\Controllers\UserPembayaranController;
+// use App\Http\Controllers\UserKegiatanController;
+// use App\Http\Controllers\UserSaranController;
+
+
+
 
 
 
@@ -27,5 +34,20 @@ Route::group([
     Route::resource('iklan', IklanController::class);
     Route::resource('pengumuman', PengumumanController::class);
     Route::resource('kegiatan', KegiatanController::class);
-    Route::resource('kritik', KritikSaranController::class);
+    Route::resource('saran', KritikSaranController::class);
 });
+
+Route::group([
+    'prefix'     => 'user',
+    'as'         => 'user.',
+    'middleware' => ['auth'],
+], function () {
+    Route::get('/', [UserDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/home', function () {
+        return view('users.home.index');
+    })->name('home');
+    // Route::resource('pembayaran', UserPembayaranController::class);
+    // Route::resource('kegiatan', UserKegiatanController::class);
+    // Route::resource('saran', UserSaranController::class);
+});
+
