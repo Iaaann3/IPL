@@ -16,7 +16,7 @@
         }
     /* Paste semua CSS dari dashboard di sini, tanpa diubah sama sekali */
     .mobile-container { max-width: 1200px; margin: 0 auto; background: white; min-height: 100vh; position: relative; overflow: hidden; }
-    .header-section { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 40px 30px 140px 30px; position: relative; border-radius: 0 0 0 0; }
+    .header-section { background: linear-gradient(135deg, #029e48ff 0%, #023914ff 100%); color: white; padding: 40px 30px 140px 30px; position: relative; border-radius: 30px 30px 0 0; }
     .profile-avatar { position: absolute; top: 30px; right: 30px; width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.3); }
     .profile-avatar i { font-size: 24px; color: white; }
     .greeting-text { font-size: 16px; opacity: 0.9; margin-bottom: 8px; }
@@ -25,14 +25,14 @@
     .balance-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .balance-label { font-size: 14px; color: #6b7280; margin: 0 0 5px 0; }
     .balance-amount { font-size: 32px; font-weight: 700; color: #111827; margin: 0; }
-    .balance-detail { font-size: 12px; color: #3b82f6; text-decoration: none; font-weight: 500; }
-    .topup-btn { background: #3b82f6; color: white; border: none; border-radius: 14px; padding: 12px 24px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-    .check-bill-btn { background: #3b82f6; color: white; border: none; border-radius: 18px; padding: 18px; font-size: 18px; font-weight: 600; width: 100%; margin: 40px 0; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .balance-detail { font-size: 12px; color: #3ad61eff; text-decoration: none; font-weight: 500; }
+    .topup-btn { background: #079813ff; color: white; border: none; border-radius: 14px; padding: 12px 24px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .check-bill-btn { background: #058022ff; color: white; border: none; border-radius: 18px; padding: 18px; font-size: 18px; font-weight: 600; width: 100%; margin: 40px 0; display: flex; align-items: center; justify-content: center; gap: 12px; }
     .main-content { padding: 90px 30px 30px 30px; }
     .section-title { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 25px; }
     .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 25px; margin-bottom: 40px; max-width: 1200px; }
     .service-item { text-align: center; text-decoration: none; color: inherit; }
-    .service-icon { width: 64px; height: 64px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 24px; }
+    .service-icon { width: 64px; height: 64px; background: #18af45ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 24px; }
     .service-label { font-size: 15px; font-weight: 600; color: #374151; }
     .info-section { margin-top: 30px; }
     .info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -69,6 +69,8 @@
 
 </head>
 <body>
+    @include('layouts.components.header')
     @yield('content')
 </body>
 </html>
+        @stack('scripts')

@@ -1,32 +1,39 @@
 <?php
+
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Models\Pembayaran;
 use Illuminate\Console\Command;
 
 class GeneratePembayaran extends Command
 {
     protected $signature   = 'pembayaran:generate';
-    protected $description = 'Generate pembayaran otomatis setiap tanggal 4';
+    protected $description = 'Generate pembayaran otomatis setiap awal bulan untuk semua user';
 
     public function handle()
     {
-        // Cek apakah sudah ada data untuk bulan ini
-        $today  = now()->startOfMonth()->toDateString();
-        $exists = Pembayaran::whereDate('tanggal', $today)->exists();
+        $today = now()->startOfMonth()->toDateString();
+        $users = User::all();
 
-        if (! $exists) {
-            Pembayaran::create([
-                'keamanan'   => 101120,
-                'lingkungan' => 40000,
-                'tanggal'    => $today,
-                'total'      => 101120 + 40000,
-                'status'     => 'Belum terbayar',
-            ]);
+        foreach ($users as $user) {
+            // cek apakah user sudah punya tagihan bulan ini
+            $exists = Pembayaran::where('id_user', $user->id)
+                ->whereDate('tanggal', $today)
+                ->exists();
 
-            $this->info("Pembayaran bulan ini berhasil dibuat.");
-        } else {
-            $this->info("Pembayaran bulan ini sudah ada.");
+            if (! $exists) {
+                Pembayaran::create([
+                    'id_user'    => $user->id,
+                    'keamanan'   => 101120,
+                    'kebersihan' => 40000,
+                    'tanggal'    => $today,
+                    'total'      => 101120 + 40000,
+                    'status'     => 'belum terbayar',
+                ]);
+            }
         }
+
+        $this->info("Tagihan bulan ini sudah diverifikasi untuk semua user (user baru otomatis dibuatkan).");
     }
 }

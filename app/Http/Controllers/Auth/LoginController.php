@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -13,25 +14,8 @@ class LoginController extends Controller
     {
         return 'no_rumah';
     }
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
 
     use AuthenticatesUsers;
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    // protected $redirectTo = '/home';
 
     /**
      * Redirect users after login based on their role.
@@ -40,19 +24,17 @@ class LoginController extends Controller
     {
         $user = auth()->user();
         if ($user && $user->role == 'admin') {
-            // Redirect to admin.pembayaran.index route
+            // Redirect ke halaman pembayaran admin
             return route('admin.pembayaran.index');
         } elseif ($user && $user->role == 'user') {
-            // Redirect to user dashboard route
-            return route('users.home.index');
+            // Redirect ke dashboard user
+            return route('user.dashboard');
         }
-        return '/home';
+        return '/home'; // fallback kalau role tidak jelas
     }
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {

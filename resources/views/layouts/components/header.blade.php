@@ -1,10 +1,10 @@
 <div class="header">
     <div class="row no-gutters">
         <div class="col-auto pt-1 pb-2 pl-3">
-            <img src="{{ asset('assets/img/favicon.png') }}" alt="Logo" class="header-logo">
+                <img src="{{ asset('assets/images/big/pesona1.jpg') }}" alt="Logo" class="header-logo rounded-circle" style="width:36px; height:36px; object-fit:contain;">
         </div>
-        <div class="col text-center pt-3 pl-3">
-            {{ config('app.name') }}
+        <div class="col text-center pl-3">
+            <span class=" fs-6">Pesona Prima 8 Banjaran</span>
         </div>
         <div class="col-auto">
             <button class="btn btn-link text-dark" data-toggle="modal" data-target="#notifications">

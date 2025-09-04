@@ -13,10 +13,15 @@ class PembayaranController extends Controller
 {
     // Menampilkan semua pembayaran
     public function index()
-    {
+{
+    if (auth()->user()->role === 'admin') {
+        $data = Pembayaran::all();
+    } else {
         $data = Pembayaran::where('id_user', auth()->id())->get();
-    return view('admin.pembayaran.index', compact('data'));
     }
+
+    return view('admin.pembayaran.index', compact('data'));
+}
 
     // Simpan data baru
     public function store(Request $request)

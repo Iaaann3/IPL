@@ -11,7 +11,7 @@ class IklanController extends Controller
 {
     public function index()
     {
-        $iklans = Iklan::with('user')->paginate(10);
+    $iklans = Iklan::with('user')->where('id_user', auth()->id())->paginate(10);
         $users  = User::where('role', '!=', 'admin')->get();
 
         return view('admin.iklan.index', compact('iklans', 'users'));
