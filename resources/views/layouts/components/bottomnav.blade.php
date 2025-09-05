@@ -1,37 +1,40 @@
-<div class="row row-cols-5 no-gutters bg-white border-top fixed-bottom">
-    <div class="col text-center">
-        <a href="{{ url('/') }}" 
-           class="btn btn-link {{ request()->is('/') ? 'text-template' : 'text-secondary text-mute' }} material-ripple" 
-           data-ripple-color="#5d8f6c">
-            <i class="fas fa-home"></i>
-        </a>
-    </div>
-    <div class="col text-center">
-        <a href="{{ url('kegiatan') }}" 
-           class="btn btn-link {{ request()->is('kegiatan') ? 'text-template' : 'text-secondary text-mute' }} material-ripple" 
-           data-ripple-color="#5d8f6c">
-            <i class="fas fa-flag"></i>
-        </a>
-    </div>
-    <div class="col text-center">
-        <a href="{{ url('payment-history') }}" 
-           class="btn btn-link {{ request()->is('payment-history') ? 'text-template' : 'text-secondary text-mute' }} material-ripple" 
-           data-ripple-color="#5d8f6c">
-            <i class="fas fa-history"></i>
-        </a>
-    </div>
-    <div class="col text-center">
-        <a href="{{ url('pengumuman') }}" 
-           class="btn btn-link {{ request()->is('pengumuman') ? 'text-template' : 'text-secondary text-mute' }} material-ripple" 
-           data-ripple-color="#5d8f6c">
-            <i class="fas fa-bullhorn"></i>
-        </a>
-    </div>
-    <div class="col text-center">
-        <a href="{{ url('my-profile') }}" 
-           class="btn btn-link {{ request()->is('my-profile') ? 'text-template' : 'text-secondary text-mute' }} material-ripple" 
-           data-ripple-color="#5d8f6c">
-            <i class="fas fa-user"></i>
-        </a>
-    </div>
+<div class="bottom-nav d-flex justify-content-between align-items-center bg-white shadow-sm border-top fixed-bottom" style="z-index: 1030; padding: 6px 0;">
+    <!-- Home -->
+    <a href="{{ route('user.home.index') }}" 
+       class="flex-fill text-center py-2 {{ request()->routeIs('user.home.index') ? 'text-success fw-bold' : 'text-muted' }}">
+        <i class="fas fa-home fa-lg"></i>
+    </a>
+
+    <!-- Kegiatan -->
+    <a href="{{ route('user.kegiatan.index') }}" 
+       class="flex-fill text-center py-2 {{ request()->routeIs('user.kegiatan.index') ? 'text-success fw-bold' : 'text-muted' }}">
+        <i class="fas fa-flag fa-lg"></i>
+    </a>
+
+    <!-- Payment History -->
+    <a href="{{ route('user.pembayaran.index') }}" 
+       class="flex-fill text-center py-2 {{ request()->routeIs('user.pembayaran.index') ? 'text-success fw-bold' : 'text-muted' }}">
+        <i class="fas fa-history fa-lg"></i>
+    </a>
+
+    <!-- Pengumuman -->
+    <a href="{{ route('user.pengumuman.index') }}" 
+       class="flex-fill text-center py-2 {{ request()->routeIs('user.pengumuman.index') ? 'text-success fw-bold' : 'text-muted' }}">
+        <i class="fas fa-bullhorn fa-lg"></i>
+    </a>
+
+    <!-- Profile -->
+    <a href="{{ route('user.profile.index') }}" 
+       class="flex-fill text-center py-2 {{ request()->routeIs('user.profile.index') ? 'text-success fw-bold' : 'text-muted' }}">
+        <i class="fas fa-user fa-lg"></i>
+    </a>
 </div>
+
+<style>
+.bottom-nav a {
+    transition: color 0.2s;
+}
+.bottom-nav a:hover {
+    color: #16a34a; /* Hijau sesuai tema */
+}
+</style>

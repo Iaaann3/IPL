@@ -6,6 +6,7 @@
     <title>@yield('title', 'PP8B')</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <style>
         body {
@@ -62,6 +63,8 @@
         .news-image { width: 60px; height: 60px; }
         .news-content h6 { font-size: 13px; }
         .news-content p { font-size: 11px; }
+
+        
     }
 
         @yield('styles')
@@ -71,6 +74,8 @@
 <body>
     @include('layouts.components.header')
     @yield('content')
+        @stack('scripts')
+    @include('layouts.components.bottomnav')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-        @stack('scripts')

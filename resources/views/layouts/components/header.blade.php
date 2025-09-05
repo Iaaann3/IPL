@@ -1,30 +1,64 @@
-<div class="header">
-    <div class="row no-gutters">
-        <div class="col-auto pt-1 pb-2 pl-3">
-                <img src="{{ asset('assets/images/big/pesona1.jpg') }}" alt="Logo" class="header-logo rounded-circle" style="width:36px; height:36px; object-fit:contain;">
+<div class="header shadow-sm bg-white px-3 py-2 position-fixed top-0 start-0 end-0" style="z-index:1030;">
+    <div class="row align-items-center no-gutters">
+        <!-- Logo -->
+        <div class="col-auto d-flex align-items-center">
+            <img src="{{ asset('assets/images/big/pesona1.jpg') }}" 
+                 alt="Logo" 
+                 class="rounded-circle border border-2 border-primary me-2" 
+                 style="width:40px; height:40px; object-fit:cover;">
         </div>
-        <div class="col text-center pl-3">
-            <span class=" fs-6">Pesona Prima 8 Banjaran</span>
+
+        <!-- Title -->
+        <div class="col text-center">
+            <span class="fw-bold text-dark" style="font-size: 15px; letter-spacing:0.5px;">
+                Pesona Prima 8 Banjaran
+            </span>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-link text-dark" data-toggle="modal" data-target="#notifications">
-                <i class="fas fa-bell pt-1"></i>
+
+        <!-- Actions -->
+        <div class="col-auto d-flex align-items-center gap-1">
+            <!-- Notification -->
+            <button class="btn btn-light rounded-circle shadow-sm me-2" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#notifications" 
+                    style="width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
+                <i class="fas fa-bell text-primary"></i>
             </button>
-            <button class="btn btn-link text-dark dropdown-toggle" data-toggle="dropdown">
-                <i class="fas fa-bars pt-1"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right pb-0" style="font-size:12px">
-                <a class="dropdown-item text-dark px-3" href="#">
-                    <i class="fas fa-image"></i> Pasang Iklan
-                </a>
-                <a href="javascript:;" class="dropdown-item text-dark px-3" data-toggle="modal" data-target="#modal-kritik-saran">
-                    <i class="fas fa-envelope-open-text"></i> Kritik & Saran
-                </a>
-                <div class="dropdown-divider mb-0"></div>
-                <a class="dropdown-item text-danger px-3" href="{{ route('logout') }}">
-                    <i class="fas fa-power-off"></i> Log out
-                </a>
+
+            <!-- Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-light rounded-circle shadow-sm" 
+                        data-bs-toggle="dropdown" 
+                        style="width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-bars text-dark"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end mt-2 shadow-sm rounded-3" style="font-size:13px;">
+                    <li>
+                        <a class="dropdown-item text-dark px-3 py-2" href="#">
+                            <i class="fas fa-image text-primary me-2"></i> Pasang Iklan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="dropdown-item text-dark px-3 py-2" 
+                           data-bs-toggle="modal" 
+                           data-bs-target="#modal-kritik-saran">
+                            <i class="fas fa-envelope-open-text text-success me-2"></i> Kritik & Saran
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item text-danger px-3 py-2">
+                                <i class="fas fa-power-off me-2"></i> Log out
+                            </button>
+                        </form>
+                    </li>               
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Tambahkan padding agar konten tidak ketutup navbar -->
+<div style="padding-top:65px;"></div>

@@ -57,31 +57,32 @@
                 </div>
                 <div class="service-label">Surat</div>
             </a> -->
-            <a href="#" class="service-item">
+            <a href="{{ route('user.pengumuman.index') }}" class="service-item">
                 <div class="service-icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <div class="service-label">Pengumuman</div>
             </a>
-            <a href="#" class="service-item">
+            <a href="{{ route('user.saran.index') }}" class="service-item">
                 <div class="service-icon">
                     <i class="fas fa-clock"></i>
                 </div>
                 <div class="service-label">Saran & Kritik</div>
             </a>
-            <a href="#" class="service-item">
-                <div class="service-icon">
-                    <i class="fas fa-info-circle"></i>
-                </div>
-                <div class="service-label">Tata Tertib</div>
-            </a>
+            <a href="javascript:;" class="service-item" data-bs-toggle="modal" data-bs-target="#tataTertibModal">
+    <div class="service-icon">
+        <i class="fas fa-info-circle"></i>
+    </div>
+    <div class="service-label">Tata Tertib</div>
+</a>
+
             <a href="#" class="service-item">
                 <div class="service-icon">
                     <i class="fas fa-question-circle"></i>
                 </div>
                 <div class="service-label">Keluhan</div>
             </a>
-            <a href="#" class="service-item">
+            <a href="{{ route('user.kegiatan.index') }}" class="service-item">
                 <div class="service-icon">
                     <i class="fas fa-exchange-alt"></i>
                 </div>
@@ -113,9 +114,40 @@
     </div>
 </div>
 @endsection
+<!-- Tata Tertib Modal -->
+<div class="modal fade" id="tataTertibModal" tabindex="-1" aria-labelledby="tataTertibLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="tataTertibLabel"><i class="fas fa-gavel me-2"></i> Tata Tertib Lingkungan</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="mb-3 text-muted">Berikut adalah peraturan dan tata tertib yang harus dipatuhi demi kenyamanan bersama:</p>
+        <ol style="padding-left: 20px;">
+          <li>Menjaga kebersihan lingkungan dan tidak membuang sampah sembarangan.</li>
+          <li>Patuh terhadap jadwal pengangkutan sampah dan gunakan tempat sampah yang disediakan.</li>
+          <li>Dilarang melakukan aktivitas yang mengganggu ketertiban umum.</li>
+          <li>Kendaraan parkir di tempat yang telah ditentukan dan tidak menghalangi akses.</li>
+          <li>Pemilik hewan peliharaan bertanggung jawab atas kebersihan dan perilaku hewan.</li>
+          <li>Setiap pemasangan pengumuman/iklan harus seizin pengelola.</li>
+          <li>Pelanggaran tata tertib dapat dikenakan sanksi sesuai ketentuan pengelola.</li>
+        </ol>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+        <button type="button" id="printTataTertibBtn" class="btn btn-success">
+          <i class="fas fa-print me-1"></i> Cetak
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
 <script>
 document.querySelectorAll('.bayar-home-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -136,5 +168,25 @@ document.querySelectorAll('.bayar-home-btn').forEach(btn => {
         });
     });
 });
+
+// Print Tata Tertib
+document.addEventListener('DOMContentLoaded', function () {
+  const printBtn = document.getElementById('printTataTertibBtn');
+  if (printBtn) {
+    printBtn.addEventListener('click', function () {
+      const modalBody = document.querySelector('#tataTertibModal .modal-body');
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      printWindow.document.write('<html><head><title>Tata Tertib</title></head><body>');
+      printWindow.document.write(modalBody.innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.print();
+      }, 300);
+    });
+  }
+});
 </script>
 @endpush
+
+

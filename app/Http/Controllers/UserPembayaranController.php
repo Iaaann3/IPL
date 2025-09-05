@@ -41,20 +41,25 @@ class UserPembayaranController extends Controller
 
     public function bayar($id)
     {
-        $pembayaran = Pembayaran::where('id', $id)
-            ->where('id_user', auth()->id())
-            ->firstOrFail();
+        try {
+            $pembayaran = Pembayaran::where('id', $id)
+                ->where('id_user', auth()->id())
+                ->firstOrFail();
 
-        $pembayaran->update([
-            'status'        => 'pembayaran berhasil',
-            'tanggal_bayar' => now(),
-        ]);
+            $pembayaran->update([
+                'status'        => 'pembayaran berhasil',
+                'tanggal_bayar' => now(),
+            ]);
 
-        if (request()->expectsJson()) {
-            return response()->json(['success' => true]);
+            return request()->expectsJson()
+            ? response()->json(['success' => true])
+            : redirect()->route('user.pembayaran.detail', $pembayaran->id)
+                ->with('success', 'Pembayaran berhasil dilakukan.');
+        } catch (\Exception $e) {
+            return request()->expectsJson()
+            ? response()->json(['success' => false, 'error' => $e->getMessage()], 500)
+            : back()->withErrors('Gagal melakukan pembayaran: ' . $e->getMessage());
         }
-        return redirect()->route('user.pembayaran.detail', $pembayaran->id)
-            ->with('success', 'Pembayaran berhasil dilakukan.');
     }
 
 }

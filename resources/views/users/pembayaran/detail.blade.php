@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konfirmasi Tagihan</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,9 +22,11 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            max-width: 600px;
+            max-width: 1000px;
             width: 100%;
             position: relative;
+            min-height: 600px; /* biar kotaknya panjang */
+            padding-bottom: 20px;
         }
 
         .invoice-header {
@@ -73,6 +71,7 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.3s;
+            text-decoration: none;
         }
 
         .close-btn:hover {
@@ -119,9 +118,7 @@
             letter-spacing: 1px;
         }
 
-        .invoice-body {
-            padding: 40px;
-        }
+        .invoice-body { padding: 40px; }
 
         .invoice-item {
             display: flex;
@@ -140,17 +137,8 @@
             border-radius: 10px;
         }
 
-        .item-name {
-            font-size: 16px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .item-amount {
-            font-size: 16px;
-            color: #666;
-            font-weight: 600;
-        }
+        .item-name { font-size: 16px; color: #333; font-weight: 500; }
+        .item-amount { font-size: 16px; color: #666; font-weight: 600; }
 
         .subtotal {
             background: linear-gradient(135deg, #f8f9ff, #e8f2ff);
@@ -187,14 +175,8 @@
             100% { left: 100%; }
         }
 
-        .currency {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .amount {
-            font-weight: 700;
-        }
+        .currency { font-size: 14px; opacity: 0.8; }
+        .amount { font-weight: 700; }
 
         .footer {
             text-align: center;
@@ -205,25 +187,11 @@
         }
 
         @media (max-width: 480px) {
-            .invoice-container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .invoice-header {
-                padding: 20px;
-            }
-            
-            .invoice-title {
-                font-size: 24px;
-            }
-            
-            .invoice-body {
-                padding: 20px;
-            }
-            
-            .subtotal,
-            .grand-total {
+            .invoice-container { margin: 10px; border-radius: 15px; }
+            .invoice-header { padding: 20px; }
+            .invoice-title { font-size: 24px; }
+            .invoice-body { padding: 20px; }
+            .subtotal, .grand-total {
                 margin-left: -20px;
                 margin-right: -20px;
                 padding-left: 20px;
@@ -235,53 +203,60 @@
 <body>
     <div class="invoice-container">
         <div class="invoice-header">
-            <button class="close-btn">&times;</button>
-            <div class="confirmation-badge">
-                <div class="check-icon">✓</div>
-                KONFIRMASI TAGIHAN
-            </div>
+            <!-- Tombol close balik ke user.home -->
+            <a href="{{ route('user.home.index') }}" class="close-btn">&times;</a>
+
             <h1 class="invoice-title">Tagihan Bulan September 2025</h1>
             <div class="invoice-id">INV6654C7D1</div>
         </div>
         
         <div class="invoice-body">
-            <div class="invoice-item">
-                <div class="item-name">Pengganti Pengelolaan Lingkungan</div>
-                <div class="item-amount">
-                    <span class="currency">Rp</span>
-                    <span class="amount">101,120</span>
-                </div>
-            </div>
-            
-            <div class="invoice-item">
-                <div class="item-name">Pengelolaan Sampah</div>
-                <div class="item-amount">
-                    <span class="currency">Rp</span>
-                    <span class="amount">40,000</span>
-                </div>
-            </div>
-            
-            <div class="subtotal">
-                <div class="invoice-item" style="border: none; margin: 0; padding: 0;">
-                    <div class="item-name" style="font-weight: 600;">Sub Total</div>
-                    <div class="item-amount">
-                        <span class="currency">Rp</span>
-                        <span class="amount">141,120</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grand-total">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>Grand Total</div>
-                    <div>
-                        <span class="currency">Rp</span>
-                        <span class="amount">141,120</span>
-                    </div>
-                </div>
+    @php
+        $subtotal = 0;
+    @endphp
+
+    {{-- Item Keamanan --}}
+    <div class="invoice-item">
+        <div class="item-name">Pengganti Pengelolaan Lingkungan</div>
+        <div class="item-amount">
+            <span class="currency">Rp</span>
+            <span class="amount">{{ number_format($pembayaran->keamanan, 0, ',', '.') }}</span>
+        </div>
+    </div>
+    @php $subtotal += $pembayaran->keamanan; @endphp
+
+    {{-- Item Kebersihan --}}
+    <div class="invoice-item">
+        <div class="item-name">Pengelolaan Sampah</div>
+        <div class="item-amount">
+            <span class="currency">Rp</span>
+            <span class="amount">{{ number_format($pembayaran->kebersihan, 0, ',', '.') }}</span>
+        </div>
+    </div>
+    @php $subtotal += $pembayaran->kebersihan; @endphp
+
+    {{-- Subtotal --}}
+    <div class="subtotal">
+        <div class="invoice-item" style="border: none; margin: 0; padding: 0;">
+            <div class="item-name" style="font-weight: 600;">Sub Total</div>
+            <div class="item-amount">
+                <span class="currency">Rp</span>
+                <span class="amount">{{ number_format($subtotal, 0, ',', '.') }}</span>
             </div>
         </div>
-        
+    </div>
+
+    {{-- Grand Total --}}
+    <div class="grand-total">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>Grand Total</div>
+            <div>
+                <span class="currency">Rp</span>
+                <span class="amount">{{ number_format($pembayaran->total, 0, ',', '.') }}</span>
+            </div>
+        </div>
+    </div>
+        </div>    
         <div class="footer">
             Terima kasih atas kepercayaan Anda
         </div>

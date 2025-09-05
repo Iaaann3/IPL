@@ -6,8 +6,12 @@ use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\UserDashboardController;
-use App\Http\Middleware\IsAdmin;
+use App\Http\Controllers\UserKegiatanController;
 use App\Http\Controllers\UserPembayaranController;
+use App\Http\Controllers\UserPengumumanController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,9 +45,8 @@ Route::group([
     Route::get('/', [UserDashboardController::class, 'index'])->name('dashboard');
 
     // Halaman home user
-    Route::get('/home', function () {
-        return view('users.home.index');
-    })->name('home');
+    Route::get('/home', [UserDashboardController::class, 'index'])
+        ->name('home.index');
 
     // Daftar pembayaran
     Route::get('/pembayaran', [App\Http\Controllers\UserPembayaranController::class, 'index'])
@@ -55,9 +58,29 @@ Route::group([
 
     // Detail pembayaran
     Route::get('/pembayaran/{id}/detail', [UserPembayaranController::class, 'detail'])
-    ->name('pembayaran.detail');
+        ->name('pembayaran.detail');
 
     // Bayar
     Route::post('/pembayaran/{id}/bayar', [App\Http\Controllers\UserPembayaranController::class, 'bayar'])
         ->name('pembayaran.bayar');
+
+    // Kegiatan
+    Route::get('/kegiatan', [UserKegiatanController::class, 'index'])
+        ->name('kegiatan.index');
+
+// Pengumuman
+    Route::get('/pengumuman', [UserPengumumanController::class, 'index'])
+        ->name('pengumuman.index');
+
+// Profile
+    Route::get('/my-profile', [UserProfileController::class, 'index'])
+        ->name('profile.index');
+
+    // Kritik & Saran
+    Route::get('/kritik-saran', [App\Http\Controllers\UserSaranController::class, 'index'])
+        ->name('saran.index');
+    Route::post('/kritik-saran', [App\Http\Controllers\UserSaranController::class, 'store'])
+        ->name('saran.store');
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
 });
